@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.28.3)
-project(TypeTraits
+project(DebugTrace
         VERSION 1.0.0
         DESCRIPTION "A header only for conversion of standard containers"
-        HOMEPAGE_URL "https://github.com/kingkybel/TypeTraits")
+        HOMEPAGE_URL "https://github.com/kingkybel/DebugTrace")
 
 include(GNUInstallDirs)
 
