@@ -4,7 +4,8 @@
 #define DO_TRACE_ // NOSONAR: for testing toggling
 #include <traceutil.h>
 
-void test_enabled() {
+void test_enabled()
+{
     std::cout << "--- Scenario: Trace Enabled ---" << std::endl;
     int x = 42;
     TRACE1(x);
@@ -12,10 +13,11 @@ void test_enabled() {
 }
 
 // Scenario 2: Trace disabled
-#undef DO_TRACE_ // NOSONAR: for testing toggling
-#include <traceutil.h>
+#undef DO_TRACE_       // NOSONAR: for testing toggling
+#include <traceutil.h> // NOSONAR: for testing toggling
 
-void test_disabled() {
+void test_disabled()
+{
     std::cout << "--- Scenario: Trace Disabled ---" << std::endl;
     int y = 100;
     TRACE1(y); // Should produce no output
@@ -23,17 +25,19 @@ void test_disabled() {
 }
 
 // Scenario 3: Trace re-enabled
-#define DO_TRACE_ // NOSONAR: for testing toggling
-#include <traceutil.h>
+#define DO_TRACE_      // NOSONAR: for testing toggling
+#include <traceutil.h> // NOSONAR: for testing toggling
 
-void test_reenabled() {
+void test_reenabled()
+{
     std::cout << "--- Scenario: Trace Re-enabled ---" << std::endl;
     int z = 7;
     TRACE1(z);
     TRACE0;
 }
 
-int main() {
+int main()
+{
     test_enabled();
     test_disabled();
     test_reenabled();
