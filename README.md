@@ -1,3 +1,5 @@
+![DebugTrace Banner](assets/banners/debug_trace_banner.svg)
+
 # DebugTrace
 
 Simple debug tracing for convenience
@@ -27,3 +29,8 @@ Include the file in your code e.g:
 #define DO_TRACE_
 #include <dkyb/traceutil.h>
 ```
+## Powered by
+Reduce the smells, keep on top of code-quality. Sonar Qube is run on every push to the `main` branch on GitHub.
+
+
+[![SonarQubeCloud](assets/icons/logo-sonarqube-cloud-small.png)](https://sonarcloud.io/project/overview?id=kingkybel)
