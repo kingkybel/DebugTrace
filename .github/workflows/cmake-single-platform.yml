@@ -75,5 +75,5 @@ jobs:
             -Dsonar.organization=${{ vars.SONAR_ORG }}
             -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }}
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
-            -Dsonar.sources=include
+            -Dsonar.sources=include,test
             -Dsonar.cfamily.build-wrapper-output=bw-output

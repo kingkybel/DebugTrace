@@ -52,16 +52,19 @@ link_directories(
         system
 )
 
-add_library(DirectedGraphs INTERFACE)
+add_library(DebugTrace INTERFACE)
 # Adding the install interface generator expression makes sure that the include
 # files are installed to the proper location (provided by GNUInstallDirs)
 target_include_directories(
-        DirectedGraphs
+        DebugTrace
         INTERFACE $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
-target_compile_features(DirectedGraphs INTERFACE cxx_std_23)
+target_compile_features(DebugTrace INTERFACE cxx_std_23)
+
+add_executable(test_trace test/test_trace.cpp)
+target_link_libraries(test_trace PRIVATE DebugTrace)
 
 set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=* -p ${CMAKE_SOURCE_DIR}/build")
 
