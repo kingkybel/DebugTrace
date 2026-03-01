@@ -1,7 +1,7 @@
 #include <iostream>
 
 // Scenario 1: Trace enabled
-#define DO_TRACE_
+#define DO_TRACE_ // NOSONAR: for testing toggling
 #include <traceutil.h>
 
 void test_enabled() {
@@ -12,7 +12,7 @@ void test_enabled() {
 }
 
 // Scenario 2: Trace disabled
-#undef DO_TRACE_
+#undef DO_TRACE_ // NOSONAR: for testing toggling
 #include <traceutil.h>
 
 void test_disabled() {
@@ -23,7 +23,7 @@ void test_disabled() {
 }
 
 // Scenario 3: Trace re-enabled
-#define DO_TRACE_
+#define DO_TRACE_ // NOSONAR: for testing toggling
 #include <traceutil.h>
 
 void test_reenabled() {

@@ -20,15 +20,15 @@
 #if __has_include(<source_location>)
 #include <source_location>
 #if defined(__cpp_lib_source_location) && __cpp_lib_source_location >= 201907L
-#define DKYB_HAS_SOURCE_LOCATION 1
+#define DKYB_HAS_SOURCE_LOCATION 1 // NOSONAR
 #endif
 #endif
 
 #ifndef DKYB_HAS_SOURCE_LOCATION
 #if __has_include(<experimental/source_location>)
 #include <experimental/source_location>
-#define DKYB_HAS_SOURCE_LOCATION 1
-#define DKYB_SOURCE_LOCATION_EXPERIMENTAL 1
+#define DKYB_HAS_SOURCE_LOCATION 1          // NOSONAR
+#define DKYB_SOURCE_LOCATION_EXPERIMENTAL 1 // NOSONAR
 #endif
 #endif
 
@@ -91,9 +91,9 @@ namespace dkyb::trace {
 #undef PTRACE3             // NOSONAR
 
 #if defined(ENABLE_DEBUG_TRACE) || defined(DO_TRACE_)
-    #define DKYB_TRACE_ENABLED_ true
+#define DKYB_TRACE_ENABLED_ true // NOSONAR
 #else
-    #define DKYB_TRACE_ENABLED_ false
+#define DKYB_TRACE_ENABLED_ false // NOSONAR
 #endif
 
 // Simple Wrappers
