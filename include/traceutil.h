@@ -80,15 +80,15 @@ namespace dkyb::trace {
 #endif // DKYB_TRACEUTIL_H_
 
 // The following part is NOT guarded to allow redefining TRACE macros when DO_TRACE_ changes
-#undef DKYB_TRACE_ENABLED_
-#undef TRACE0
-#undef TRACE1
-#undef TRACE2
-#undef TRACE3
-#undef PTRACE0
-#undef PTRACE1
-#undef PTRACE2
-#undef PTRACE3
+#undef DKYB_TRACE_ENABLED_ // NOSONAR
+#undef TRACE0              // NOSONAR
+#undef TRACE1              // NOSONAR
+#undef TRACE2              // NOSONAR
+#undef TRACE3              // NOSONAR
+#undef PTRACE0             // NOSONAR
+#undef PTRACE1             // NOSONAR
+#undef PTRACE2             // NOSONAR
+#undef PTRACE3             // NOSONAR
 
 #if defined(ENABLE_DEBUG_TRACE) || defined(DO_TRACE_)
     #define DKYB_TRACE_ENABLED_ true
