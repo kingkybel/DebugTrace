@@ -11,6 +11,8 @@ include(CTest)
 include(cmake-common/cmake/DkybBuildSettings.cmake)
 dkyb_apply_common_settings(CXX_STANDARD 23)
 
+dkyb_update_submodules()
+
 set(CMAKE_FIND_LIBRARY_PREFIXES lib)
 set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
 set(BUILD_SHARED_LIBS OFF)
