@@ -97,12 +97,12 @@ namespace dkyb::trace {
 #endif
 
 // Simple Wrappers
-#define TRACE0 dkyb::trace::trace_out(dkyb::trace::source_location::current(), false, DKYB_TRACE_ENABLED_)
-#define TRACE1(v1) dkyb::trace::trace_out(dkyb::trace::source_location::current(), false, DKYB_TRACE_ENABLED_, #v1 "=", v1)
-#define TRACE2(v1, v2) dkyb::trace::trace_out(dkyb::trace::source_location::current(), false, DKYB_TRACE_ENABLED_, #v1 "=", v1, #v2 "=", v2)
-#define TRACE3(v1, v2, v3) dkyb::trace::trace_out(dkyb::trace::source_location::current(), false, DKYB_TRACE_ENABLED_, #v1 "=", v1, #v2 "=", v2, #v3 "=", v3)
+#define TRACE0 dkyb::trace::trace_out(dkyb::trace::source_location::current(), false, DKYB_TRACE_ENABLED_);
+#define TRACE1(v1) dkyb::trace::trace_out(dkyb::trace::source_location::current(), false, DKYB_TRACE_ENABLED_, #v1 "=", v1);
+#define TRACE2(v1, v2) dkyb::trace::trace_out(dkyb::trace::source_location::current(), false, DKYB_TRACE_ENABLED_, #v1 "=", v1, #v2 "=", v2);
+#define TRACE3(v1, v2, v3) dkyb::trace::trace_out(dkyb::trace::source_location::current(), false, DKYB_TRACE_ENABLED_, #v1 "=", v1, #v2 "=", v2, #v3 "=", v3);
 
-#define PTRACE0 dkyb::trace::trace_out(dkyb::trace::source_location::current(), true, DKYB_TRACE_ENABLED_)
-#define PTRACE1(v1) dkyb::trace::trace_out(dkyb::trace::source_location::current(), true, DKYB_TRACE_ENABLED_, #v1 "=", v1)
-#define PTRACE2(v1, v2) dkyb::trace::trace_out(dkyb::trace::source_location::current(), true, DKYB_TRACE_ENABLED_, #v1 "=", v1, #v2 "=", v2)
-#define PTRACE3(v1, v2, v3) dkyb::trace::trace_out(dkyb::trace::source_location::current(), true, DKYB_TRACE_ENABLED_, #v1 "=", v1, #v2 "=", v2, #v3 "=", v3)
+#define PTRACE0 dkyb::trace::trace_out(dkyb::trace::source_location::current(), true, DKYB_TRACE_ENABLED_);
+#define PTRACE1(v1) dkyb::trace::trace_out(dkyb::trace::source_location::current(), true, DKYB_TRACE_ENABLED_, #v1 "=", v1);
+#define PTRACE2(v1, v2) dkyb::trace::trace_out(dkyb::trace::source_location::current(), true, DKYB_TRACE_ENABLED_, #v1 "=", v1, #v2 "=", v2);
+#define PTRACE3(v1, v2, v3) dkyb::trace::trace_out(dkyb::trace::source_location::current(), true, DKYB_TRACE_ENABLED_, #v1 "=", v1, #v2 "=", v2, #v3 "=", v3);
