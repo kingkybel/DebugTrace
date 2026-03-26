@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.26)
 project(DebugTrace
         VERSION 1.0.0
-        DESCRIPTION "A header only for conversion of standard containers"
+        DESCRIPTION "A header only for printing debug information with a simple API and minimal overhead."
         HOMEPAGE_URL "https://github.com/kingkybel/DebugTrace")
 
 include(GNUInstallDirs)
@@ -38,7 +38,7 @@ target_include_directories(
 
 target_compile_features(DebugTrace INTERFACE cxx_std_23)
 
-add_executable(test_trace test/test_trace.cpp)
+add_executable(test_trace test/test_trace.cc)
 target_link_libraries(test_trace PRIVATE DebugTrace)
 
 set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=* -p ${CMAKE_SOURCE_DIR}/build")
