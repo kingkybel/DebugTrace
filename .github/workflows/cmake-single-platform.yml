@@ -83,6 +83,18 @@ jobs:
           cmake-env-${{ needs.prepare-environment.outputs.dependency-hash }}-
           cmake-env-
 
+    - name: Install cached dependencies
+      run: |
+        cmake -S cmake-common/cmake/dependency -B ${{github.workspace}}/build/gtest-cache \
+          -DDKYB_DEPENDENCY_NAME=gtest \
+          -DDKYB_DEPENDENCY_VERSION=1.17.0 \
+          -DDKYB_DEPENDENCY_BUILD=ON \
+          -DDKYB_DEPENDENCY_CACHE_ROOT=${{github.workspace}}/build/dkyb-cache \
+          -DDKYB_DEPENDENCY_SYSTEM_INSTALL_PREFIX=/usr \
+          -DDKYB_DEPENDENCY_SYSTEM_INSTALL_USE_SUDO=ON \
+          -DCMAKE_BUILD_TYPE=Release
+        cmake --build ${{github.workspace}}/build/gtest-cache --target dkyb_dependency_runner --config Release
+
     - name: Link cached lcov
       run: |
         if [[ -d "${{github.workspace}}/build/dkyb-cache/tools/lcov" ]]; then
