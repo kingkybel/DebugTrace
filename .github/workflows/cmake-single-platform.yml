@@ -22,32 +22,85 @@ jobs:
     env:
       DKYB_DEPENDENCY_CACHE_ROOT: ${{ github.workspace }}/build/dkyb-cache
       INSTALL_PREFIX: ${{ github.workspace }}/build/dkyb-install
+      DEPENDENCY_LIST: |
+        gtest:1.17.0
+      DEPENDENCY_BUILD_TYPE: Release
 
     steps:
     - uses: actions/checkout@v4
       with:
         submodules: recursive
 
+    - name: Compute dependency hash
+      id: dependency-hash
+      run: |
+        deps="${DEPENDENCY_LIST:-}"
+        normalized=$(printf '%s' "$deps" | tr '\r' '\n' | sed -E 's/#.*//g' | sed -E 's/^[[:space:]]+//;s/[[:space:]]+$//' | grep -v '^$' || true)
+        if [[ -z "$normalized" ]]; then
+          normalized=''
+        fi
+        hash=$(printf '%s\n' "$normalized" | sha256sum | awk '{print $1}')
+        echo "hash=$hash" >> "$GITHUB_OUTPUT"
+
     - name: Restore dependency cache
       uses: actions/cache@v4
       with:
         path: build/dkyb-cache
-        key: cmake-env-gtest-1.17.0-${{ hashFiles('cmake/**') }}
+        key: cmake-env-${{ steps.dependency-hash.outputs.hash }}
         restore-keys: |
-          cmake-env-gtest-1.17.0-
+          cmake-env-${{ steps.dependency-hash.outputs.hash }}-
           cmake-env-
 
-    - name: Install cached dependencies
+    - name: Build and cache dependencies
       run: |
-        cmake -S cmake-common/cmake/dependency -B ${{github.workspace}}/build/gtest-cache \
-          -DDKYB_DEPENDENCY_NAME=gtest \
-          -DDKYB_DEPENDENCY_VERSION=1.17.0 \
-          -DDKYB_DEPENDENCY_BUILD=ON \
-          -DDKYB_DEPENDENCY_CACHE_ROOT=${{github.workspace}}/build/dkyb-cache \
-          -DDKYB_DEPENDENCY_SYSTEM_INSTALL_PREFIX=${INSTALL_PREFIX} \
-          -DDKYB_DEPENDENCY_SYSTEM_INSTALL_USE_SUDO=OFF \
-          -DCMAKE_BUILD_TYPE=Release
-        cmake --build ${{github.workspace}}/build/gtest-cache --target dkyb_dependency_runner --config Release
+        set -euo pipefail
+
+        sanitize() {
+          local value="$1"
+          printf '%s' "$value" | sed 's/[^A-Za-z0-9]/_/g' | tr '[:upper:]' '[:lower:]'
+        }
+
+        trimmed_dependencies="${DEPENDENCY_LIST:-}"
+        if [[ -z "$(printf '%s' "$trimmed_dependencies" | tr -d '[:space:]')" ]]; then
+          echo "No dependencies configured"
+          exit 0
+        fi
+
+        while IFS= read -r line || [[ -n "$line" ]]; do
+          line=$(printf '%s' "$line" | tr -d '\r')
+          line=${line%%#*}
+          line=$(printf '%s' "$line" | sed -E 's/^[[:space:]]+//;s/[[:space:]]+$//')
+          if [[ -z "$line" ]]; then
+            continue
+          fi
+          name=${line%%:*}
+          version=${line#*:}
+          if [[ "$name" == "$line" ]]; then
+            echo "Warning: dependency entry '$line' does not contain ':'. Treating version as 'latest'."
+            version=latest
+          fi
+          version=${version:-latest}
+
+          sanitized_version=$(sanitize "$version")
+          cache_dir="${DKYB_DEPENDENCY_CACHE_ROOT}/${name}/${sanitized_version}"
+          if [[ -f "${cache_dir}/.dkyb-build-ok" ]]; then
+            echo "Dependency ${name}@${version} already built; skipping."
+            continue
+          fi
+
+          build_dir="${GITHUB_WORKSPACE}/build/dependency-${name}-${sanitized_version}"
+          cmake -S cmake-common/cmake/dependency -B "$build_dir" \
+            -DDKYB_DEPENDENCY_NAME=${name} \
+            -DDKYB_DEPENDENCY_VERSION=${version} \
+            -DDKYB_DEPENDENCY_BUILD=ON \
+            -DDKYB_DEPENDENCY_CACHE_ROOT=${DKYB_DEPENDENCY_CACHE_ROOT} \
+            -DDKYB_DEPENDENCY_SYSTEM_INSTALL_PREFIX=${INSTALL_PREFIX} \
+            -DDKYB_DEPENDENCY_SYSTEM_INSTALL_USE_SUDO=OFF \
+            -DCMAKE_BUILD_TYPE=${DEPENDENCY_BUILD_TYPE}
+          cmake --build "$build_dir" --target dkyb_dependency_runner --config ${DEPENDENCY_BUILD_TYPE}
+          mkdir -p "$cache_dir"
+          touch "$cache_dir/.dkyb-build-ok"
+        done <<< "$trimmed_dependencies"
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
