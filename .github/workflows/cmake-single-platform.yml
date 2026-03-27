@@ -121,21 +121,16 @@ jobs:
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest --test-dir ${{github.workspace}}/build -C ${{env.BUILD_TYPE}} --output-on-failure
 
-    - name: Test
-      # Execute tests defined by the CMake configuration.
-      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      run: ctest --test-dir ${{github.workspace}}/build -C ${{env.BUILD_TYPE}} --output-on-failure
-
-    - name: Link cached lcov
-      run: |
-        if [[ -d "${{github.workspace}}/build/dkyb-cache/tools/lcov" ]]; then
-          for tool in lcov genhtml geninfo; do
-            src="${{github.workspace}}/build/dkyb-cache/tools/lcov/$tool"
-            if [[ -f "$src" ]]; then
-              sudo ln -sf "$src" "/usr/local/bin/$tool"
-            fi
-          done
-        fi
+    # - name: Link cached lcov
+    #   run: |
+    #     if [[ -d "${{github.workspace}}/build/dkyb-cache/tools/lcov" ]]; then
+    #       for tool in lcov genhtml geninfo; do
+    #         src="${{github.workspace}}/build/dkyb-cache/tools/lcov/$tool"
+    #         if [[ -f "$src" ]]; then
+    #           sudo ln -sf "$src" "/usr/local/bin/$tool"
+    #         fi
+    #       done
+    #     fi
 
     - name: Configure CMake (coverage)
       run: |
