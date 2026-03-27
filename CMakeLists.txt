@@ -23,7 +23,6 @@ include_directories(
         system
 )
 link_directories(
-        /usr/local/lib
         system
 )
 
