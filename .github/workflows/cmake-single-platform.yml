@@ -42,15 +42,6 @@ jobs:
         hash=$(printf '%s\n' "$normalized" | sha256sum | awk '{print $1}')
         echo "hash=$hash" >> "$GITHUB_OUTPUT"
 
-    - name: Restore dependency cache
-      uses: actions/cache@v4
-      with:
-        path: build/dkyb-cache
-        key: cmake-env-${{ steps.dependency-hash.outputs.hash }}
-        restore-keys: |
-          cmake-env-${{ steps.dependency-hash.outputs.hash }}-
-          cmake-env-
-
     - name: Build and cache dependencies
       run: |
         set -euo pipefail
@@ -101,6 +92,15 @@ jobs:
           mkdir -p "$cache_dir"
           touch "$cache_dir/.dkyb-build-ok"
         done <<< "$trimmed_dependencies"
+
+    - name: Restore dependency cache
+      uses: actions/cache@v4
+      with:
+        path: build/dkyb-cache
+        key: cmake-env-${{ steps.dependency-hash.outputs.hash }}
+        restore-keys: |
+          cmake-env-${{ steps.dependency-hash.outputs.hash }}-
+          cmake-env-
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
