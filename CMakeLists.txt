@@ -38,8 +38,7 @@ target_include_directories(
 
 target_compile_features(DebugTrace INTERFACE cxx_std_23)
 
-add_executable(test_trace test/test_trace.cc)
-target_link_libraries(test_trace PRIVATE DebugTrace)
+add_subdirectory(test)
 
 set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=* -p ${CMAKE_SOURCE_DIR}/build")
 
