@@ -42,10 +42,24 @@ jobs:
           cmake-env-${{ needs.prepare-environment.outputs.dependency-hash }}-
           cmake-env-
 
+    - name: Install cached dependencies
+      env:
+        INSTALL_PREFIX: ${{ needs.prepare-environment.outputs.install-prefix }}
+      run: |
+        cmake -S cmake-common/cmake/dependency -B ${{github.workspace}}/build/gtest-cache \
+          -DDKYB_DEPENDENCY_NAME=gtest \
+          -DDKYB_DEPENDENCY_VERSION=1.17.0 \
+          -DDKYB_DEPENDENCY_BUILD=ON \
+          -DDKYB_DEPENDENCY_CACHE_ROOT=${{github.workspace}}/build/dkyb-cache \
+          -DDKYB_DEPENDENCY_SYSTEM_INSTALL_PREFIX=${INSTALL_PREFIX} \
+          -DDKYB_DEPENDENCY_SYSTEM_INSTALL_USE_SUDO=OFF \
+          -DCMAKE_BUILD_TYPE=Release
+        cmake --build ${{github.workspace}}/build/gtest-cache --target dkyb_dependency_runner --config Release
+
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DDKYB_DEPENDENCY_CACHE_ROOT=${{github.workspace}}/build/dkyb-cache
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DDKYB_DEPENDENCY_CACHE_ROOT=${{github.workspace}}/build/dkyb-cache -DCMAKE_PREFIX_PATH=${{ needs.prepare-environment.outputs.install-prefix }}
 
     - name: Build
       # Build your program with the given configuration
@@ -108,7 +122,7 @@ jobs:
 
     - name: Configure CMake (coverage)
       run: |
-        cmake -B ${{github.workspace}}/${{env.BUILD_DIR}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+        cmake -B ${{github.workspace}}/${{env.BUILD_DIR}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_PREFIX_PATH=${{ needs.prepare-environment.outputs.install-prefix }}
 
     - name: Build (coverage)
       run: cmake --build ${{github.workspace}}/${{env.BUILD_DIR}} --config ${{env.BUILD_TYPE}}
@@ -207,9 +221,9 @@ jobs:
           sudo ln -sf "${{github.workspace}}/build/dkyb-cache/tools/sonar/build-wrapper-linux-x86-64" /usr/local/bin/build-wrapper-linux-x86-64
         fi
 
-    - name: Configure CMake
-      run: |
-        cmake -S . -B "${{env.BUILD_DIR}}" -G Ninja -DCMAKE_BUILD_TYPE="${{env.BUILD_TYPE}}" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+      - name: Configure CMake
+        run: |
+          cmake -S . -B "${{env.BUILD_DIR}}" -G Ninja -DCMAKE_BUILD_TYPE="${{env.BUILD_TYPE}}" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_PREFIX_PATH=${{ needs.prepare-environment.outputs.install-prefix }}
 
     - name: Build (captured by build-wrapper)
       run: |
