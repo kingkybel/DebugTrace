@@ -31,11 +31,11 @@ TEST_F(TraceTest, is_tracing)
 {
     std::cout << "--- Scenario: Trace Enabled ---" << std::endl;
     testing::internal::CaptureStdout();
-    int x = 42;
+    int x = 42'666;
     TRACE1(x)
     TRACE0
     std::string output = testing::internal::GetCapturedStdout();
-    EXPECT_THAT(output, ::testing::HasSubstr("x=42"));
+    EXPECT_THAT(output, ::testing::HasSubstr("42666"));
     EXPECT_THAT(output, ::testing::HasSubstr("test/trace_tests.cc"));
 }
 
@@ -62,10 +62,10 @@ TEST_F(TraceTest, is_tracing_again)
 {
     std::cout << "--- Scenario: Trace Re-enabled ---" << std::endl;
     testing::internal::CaptureStdout();
-    int z = 7;
+    int z = 4'711;
     TRACE1(z)
     TRACE0
     std::string output = testing::internal::GetCapturedStdout();
-    EXPECT_THAT(output, ::testing::HasSubstr("z=7"));
+    EXPECT_THAT(output, ::testing::HasSubstr("4711"));
     EXPECT_THAT(output, ::testing::HasSubstr("test/trace_tests.cc"));
 }
