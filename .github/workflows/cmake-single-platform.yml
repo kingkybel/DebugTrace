@@ -42,6 +42,18 @@ jobs:
           deps-gtest-1.17.0-
           deps-gtest-
 
+    - name: Install cached gtest system-wide
+      run: |
+        cmake -S cmake-common/cmake/dependency -B ${{github.workspace}}/build/gtest-cache \
+          -DDKYB_DEPENDENCY_NAME=gtest \
+          -DDKYB_DEPENDENCY_VERSION=1.17.0 \
+          -DDKYB_DEPENDENCY_BUILD=ON \
+          -DDKYB_DEPENDENCY_CACHE_ROOT=${{github.workspace}}/build/dkyb-cache \
+          -DDKYB_DEPENDENCY_SYSTEM_INSTALL_PREFIX=/usr \
+          -DDKYB_DEPENDENCY_SYSTEM_INSTALL_USE_SUDO=ON \
+          -DCMAKE_BUILD_TYPE=Release
+        cmake --build ${{github.workspace}}/build/gtest-cache --target dkyb_dependency_runner --config Release
+
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
