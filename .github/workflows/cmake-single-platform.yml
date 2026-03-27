@@ -221,9 +221,9 @@ jobs:
           sudo ln -sf "${{github.workspace}}/build/dkyb-cache/tools/sonar/build-wrapper-linux-x86-64" /usr/local/bin/build-wrapper-linux-x86-64
         fi
 
-      - name: Configure CMake
-        run: |
-          cmake -S . -B "${{env.BUILD_DIR}}" -G Ninja -DCMAKE_BUILD_TYPE="${{env.BUILD_TYPE}}" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_PREFIX_PATH=${{ needs.prepare-environment.outputs.install-prefix }}
+    - name: Configure CMake
+      run: |
+        cmake -S . -B "${{env.BUILD_DIR}}" -G Ninja -DCMAKE_BUILD_TYPE="${{env.BUILD_TYPE}}" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_PREFIX_PATH=${{ needs.prepare-environment.outputs.install-prefix }}
 
     - name: Build (captured by build-wrapper)
       run: |
