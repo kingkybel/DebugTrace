@@ -15,7 +15,7 @@ env:
 
 jobs:
   prepare-environment:
-    uses: kingkybel/cmake-common/.github/workflows/cmake-single-platform.yml@main
+    uses: kingkybel/CMakeCommon/.github/workflows/cmake-single-platform.yml@main
     with:
       dependency-list: |
         gtest:1.17.0
