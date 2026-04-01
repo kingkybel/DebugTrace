@@ -145,7 +145,7 @@ jobs:
     - name: Link cached Sonar build-wrapper
       run: |
         if [[ -f "${{env.DKYB_DEPENDENCY_CACHE_ROOT}}/tools/sonar/build-wrapper-linux-x86-64/build-wrapper-linux-x86-64" ]]; then
-          sudo ln -sf "${{env.DKYB_DEPENDENCY_CACHE_ROOT}}/tools/sonar/build-wrapper-linux-x86-64" /usr/local/bin/build-wrapper-linux-x86-64
+          sudo ln -sf "${{env.DKYB_DEPENDENCY_CACHE_ROOT}}/tools/sonar/build-wrapper-linux-x86-64/build-wrapper-linux-x86-64" /usr/local/bin/build-wrapper-linux-x86-64
         fi
 
     - name: Configure CMake (sonar)
