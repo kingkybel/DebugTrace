@@ -3,7 +3,7 @@
  * File Name:   include/traceutil.h
  * Description: debug tracing
  *
- * Copyright (C) 2023 Dieter J Kybelksties <github@kybelksties.com>
+ * Copyright (C) 2026 Dieter J Kybelksties <github@kybelksties.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
