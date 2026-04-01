@@ -47,57 +47,6 @@ jobs:
         hash=$(printf '%s\n' "$normalized" | sha256sum | awk '{print $1}')
         echo "hash=$hash" >> "$GITHUB_OUTPUT"
 
-    - name: Build and cache dependencies
-      run: |
-        set -euo pipefail
-
-        sanitize() {
-          local value="$1"
-          printf '%s' "$value" | sed 's/[^A-Za-z0-9]/_/g' | tr '[:upper:]' '[:lower:]'
-        }
-
-        trimmed_dependencies="${DEPENDENCY_LIST:-}"
-        if [[ -z "$(printf '%s' "$trimmed_dependencies" | tr -d '[:space:]')" ]]; then
-          echo "No dependencies configured"
-          exit 0
-        fi
-
-        while IFS= read -r line || [[ -n "$line" ]]; do
-          line=$(printf '%s' "$line" | tr -d '\r')
-          line=${line%%#*}
-          line=$(printf '%s' "$line" | sed -E 's/^[[:space:]]+//;s/[[:space:]]+$//')
-          if [[ -z "$line" ]]; then
-            continue
-          fi
-          name=${line%%:*}
-          version=${line#*:}
-          if [[ "$name" == "$line" ]]; then
-            echo "Warning: dependency entry '$line' does not contain ':'. Treating version as 'latest'."
-            version=latest
-          fi
-          version=${version:-latest}
-
-          sanitized_version=$(sanitize "$version")
-          cache_dir="${DKYB_DEPENDENCY_CACHE_ROOT}/${name}/${sanitized_version}"
-          if [[ -f "${cache_dir}/.dkyb-build-ok" ]]; then
-            echo "Dependency ${name}@${version} already built; skipping."
-            continue
-          fi
-
-          build_dir="${GITHUB_WORKSPACE}/build/dependency-${name}-${sanitized_version}"
-          cmake -S cmake-common/cmake/dependency -B "$build_dir" \
-            -DDKYB_DEPENDENCY_NAME=${name} \
-            -DDKYB_DEPENDENCY_VERSION=${version} \
-            -DDKYB_DEPENDENCY_BUILD=ON \
-            -DDKYB_DEPENDENCY_CACHE_ROOT=${DKYB_DEPENDENCY_CACHE_ROOT} \
-            -DDKYB_DEPENDENCY_SYSTEM_INSTALL_PREFIX=${INSTALL_PREFIX} \
-            -DDKYB_DEPENDENCY_SYSTEM_INSTALL_USE_SUDO=OFF \
-            -DCMAKE_BUILD_TYPE=${DEPENDENCY_BUILD_TYPE}
-          cmake --build "$build_dir" --target dkyb_dependency_runner --config ${DEPENDENCY_BUILD_TYPE}
-          mkdir -p "$cache_dir"
-          touch "$cache_dir/.dkyb-build-ok"
-        done <<< "$trimmed_dependencies"
-
     - name: Restore dependency cache
       uses: actions/cache@v4
       with:
@@ -106,6 +55,9 @@ jobs:
         restore-keys: |
           cmake-env-${{ steps.dependency-hash.outputs.hash }}-
           cmake-env-
+
+    - name: Build and cache dependencies
+      run: cmake-common/scripts/build-and-cache-dependencies.sh
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
@@ -120,17 +72,6 @@ jobs:
       # Execute tests defined by the CMake configuration.
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest --test-dir ${{github.workspace}}/build -C ${{env.BUILD_TYPE}} --output-on-failure
-
-    # - name: Link cached lcov
-    #   run: |
-    #     if [[ -d "${{github.workspace}}/build/dkyb-cache/tools/lcov" ]]; then
-    #       for tool in lcov genhtml geninfo; do
-    #         src="${{github.workspace}}/build/dkyb-cache/tools/lcov/$tool"
-    #         if [[ -f "$src" ]]; then
-    #           sudo ln -sf "$src" "/usr/local/bin/$tool"
-    #         fi
-    #       done
-    #     fi
 
     - name: Configure CMake (coverage)
       run: |
